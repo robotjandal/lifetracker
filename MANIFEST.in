@@ -1,0 +1,6 @@
+include LICENSE
+include lifetracker/schema.sql
+graft lifetracker/static
+graft lifetracker/templates
+graft tests
+global-exclude *.pyc
