@@ -3,20 +3,20 @@
 {% block header %}
 <h1>{% block title %}Goals{% endblock %}</h1>
 {% if g.user %}
-<a class="action" href="{{ url_for('goals.index') }}">Index</a>
+<a class="action" href="{{ url_for('goals.create') }}">Create</a>
 {% endif %}
 {% endblock %}
 
 {% block content %}
-{% for post in posts %}
-<article class="post">
+{% for goal in goals %}
+<article class="goal">
     <header>
         <div>
-            <h1>{{ post['title'] }}</h1>
-            <div class="about">by {{ post['username'] }} on {{ post['created'].strftime('%Y-%m-%d') }}</div>
+            <h1>{{ goal['title'] }}</h1>
+            <div class="about">by {{ goal['username'] }} on {{ goal['created'].strftime('%Y-%m-%d') }}</div>
         </div>
-        {% if g.user['id'] == post['author_id'] %}
-        <a class="action" href="{{ url_for('goals.update', id=post['id']) }}">Edit</a>
+        {% if g.user['id'] == goal['author_id'] %}
+        <a class="action" href="{{ url_for('goals.update', id=goal['id']) }}">Edit</a>
         {% endif %}
     </header>
 </article>
