@@ -36,6 +36,14 @@ Run
 Open http://127.0.0.1:5000 in a browser.
 
 
+Deploy
+------
+
+This project can be deployed to a Docker container with gunicorn:
+    $ docker build -f Dockerfile . -t lifetracker
+    $ docker run -p 5000:5000 lifetracker
+
+
 Test
 ----
 
