@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>{% block title %}Progress History{% endblock %}</h1>
+{% if g.user %}
+<a class="action" href="{{ url_for('index') }}">Home</a>
+{% endif %}
+{% endblock %}
+
+
+{% block content %}
+<artcile class="Progress History">
+    <header>
+        <h1>Goals</h1>
+    </header>
+    <div>
+        <table style="width:100%">
+            <tr>
+                {% for item in header %}
+                <th>{{ item }}</th>
+                {% endfor %}
+            </tr>
+            {% for row in progress_history %}
+            <tr>
+                {% for cell in row %}
+                <td>{{ cell }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</artcile>
+{% endblock %}

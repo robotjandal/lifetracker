@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>{% block title %}Progress{% endblock %}</h1>
+{% if g.user %}
+<link rel="stylesheet" href="{{ url_for('static', filename='progress.css') }}">
+<a class="action" href="{{ url_for('goals.index') }}">Home</a>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<artcile class="goal">
+    <header>
+        <h1>Goals</h1>
+    </header>
+    <form method="post">
+    <div>
+            <table style="width:100%">
+                <tr>
+                    <th>Description</th>
+                    <th>Date</th>
+                </tr>
+                {% for goal in goals %}
+                <tr>
+                    <td>{{ goal['title'] }}</td>
+                    <td>
+                        <input type="hidden" id="id" name="id" value="{{ goal['id'] }}">             
+                        <input type="number" name="progress" min="1" max="5" required>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <input type="submit" value="Save">
+    </form>
+</artcile>
+{% endblock %}

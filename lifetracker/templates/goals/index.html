@@ -4,6 +4,8 @@
 <h1>{% block title %}Goals{% endblock %}</h1>
 {% if g.user %}
 <a class="action" href="{{ url_for('goals.create') }}">Create</a>
+<a class="action" href="{{ url_for('progress.index') }}">History</a>
+<a class="action" href="{{ url_for('progress.create') }}">Progress</a>
 {% endif %}
 {% endblock %}
 
@@ -13,7 +15,7 @@
     <header>
         <div>
             <h1>{{ goal['title'] }}</h1>
-            <div class="about">by {{ goal['username'] }} on {{ goal['created'].strftime('%Y-%m-%d') }}</div>
+            <div class="details">by {{ goal['username'] }} on {{ goal['created'].strftime('%Y-%m-%d') }}</div>
         </div>
         {% if g.user['id'] == goal['author_id'] %}
         <a class="action" href="{{ url_for('goals.update', id=goal['id']) }}">Edit</a>

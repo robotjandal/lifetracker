@@ -2,6 +2,7 @@
 
 {% block header %}
 <h1>{% block title %}New Goal{% endblock %}</h1>
+<a class="action" href="{{ url_for('goals.index') }}">Home</a>
 {% endblock %}
 
 {% block content %}

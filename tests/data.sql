@@ -5,5 +5,24 @@ VALUES
 
 INSERT INTO goals (title, author_id, created)
 VALUES
-  ('test title', 1, '2018-01-01 00:00:00');
+  ('First test goal', 1, '2018-01-01 00:00:00'),
+  ('Second test goal', 1, '2018-01-02 00:00:00');
 
+
+INSERT INTO progress (progress, goal_id, author_id, created)
+VALUES
+-- Introducing five progress points for the first goal (five days)
+  (5, 1, 1, '2018-01-01 00:00:00'),
+  (3, 1, 1, '2018-01-02 00:00:00'),
+  (5, 1, 1, '2018-01-03 00:01:00'),
+  (5, 1, 1, '2018-01-04 00:00:00'),
+  (3, 1, 1, '2018-01-05 00:00:00'),  
+  (5, 1, 1, '2018-01-06 00:00:00'),  
+-- Introducing six progress points for the second goal (five days)
+  (5, 2, 1, '2018-01-01 00:00:00'),
+  (3, 2, 1, '2018-01-02 00:00:00'),
+  (3, 2, 1, '2018-01-03 00:00:00'),
+  (3, 2, 1, '2018-01-04 00:00:00'),
+  (4, 2, 1, '2018-01-04 00:01:00'),
+  (5, 2, 1, '2018-01-05 00:01:00'),
+  (5, 2, 1, '2018-01-06 00:01:00');

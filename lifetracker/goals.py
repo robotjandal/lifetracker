@@ -45,15 +45,25 @@ def get_goal(id, check_author=True):
     return goal
 
 
-@bp.route("/")
-def index():
-    """ Current goals are displayed."""
+def fetch_goals(check_author=True):
+    """
+        Retrieve all goals for a user
+    """
     db = get_db()
     goals = db.execute(
         "SELECT g.id, title, created, author_id, username"
         " FROM goals g JOIN user u ON g.author_id = u.id"
         " ORDER BY created DESC"
     ).fetchall()
+
+    return goals
+
+
+@bp.route("/")
+def index():
+    """ Current goals are displayed."""
+    # db = get_db()
+    goals = fetch_goals()
     return render_template("goals/index.html", goals=goals)
 
 

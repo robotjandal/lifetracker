@@ -1,10 +1,13 @@
 import os
+import logging
 from flask import Flask
 
 
 def create_app(test_config=None):
     """Create and configure Flask application for life tracking."""
     app = Flask(__name__, instance_relative_config=True)
+    # self.logger = logging.getLogger('my_flask_ext_logger')
+    app.logger.setLevel(logging.DEBUG)
     app.config.from_mapping(
         SECRET_KEY="dev",
         DATABASE=os.path.join(app.instance_path, "lifetracker.sqlite"),
@@ -34,10 +37,11 @@ def create_app(test_config=None):
     # db.init_app(app)
 
     # apply the blueprints to the app
-    from lifetracker import auth, goals
+    from lifetracker import auth, goals, progress
 
     app.register_blueprint(auth.bp)
     app.register_blueprint(goals.bp)
+    app.register_blueprint(progress.bp)
 
     # make url_for('index') == url_for('blog.index')
     # in another app, you might define a separate main index here with
