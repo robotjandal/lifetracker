@@ -1,0 +1,8 @@
+**/instance
+.git
+.dockerignore
+*.rst
+.*
+test*
+config/development.py
+config/testing.py
