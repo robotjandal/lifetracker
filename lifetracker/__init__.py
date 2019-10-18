@@ -3,28 +3,48 @@ import logging
 from flask import Flask
 
 
-def create_app(test_config=None):
+def create_app(test_config=None, instance_path=None):
     """Create and configure Flask application for life tracking."""
-    app = Flask(__name__, instance_relative_config=True)
-    # self.logger = logging.getLogger('my_flask_ext_logger')
-    app.logger.setLevel(logging.DEBUG)
+
+    app = Flask(__name__)
+
+    # Load the default configuration
+    app.config.from_object("config.default")
+    app.instance_path = app.config["INSTANCE_FOLDER"]
+
+    if not os.environ.get("LIFETRACKER_CONFIG"):
+        raise FileNotFoundError("LIFETRACKER_CONFIG not found")
+    app.config.from_envvar("LIFETRACKER_CONFIG", silent=True)
+
+    # Set debug level
+    if app.config["DEBUG_LEVEL"] == "CRITICAL":
+        app.logger.setLevel(logging.CRITICAL)
+    elif app.config["DEBUG_LEVEL"] == "ERROR":
+        app.logger.setLevel(logging.ERROR)
+    elif app.config["DEBUG_LEVEL"] == "WARNING":
+        app.logger.setLevel(logging.WARNING)
+    elif app.config["DEBUG_LEVEL"] == "INFO":
+        app.logger.setLevel(logging.INFO)
+    elif app.config["DEBUG_LEVEL"] == "DEBUG":
+        app.logger.setLevel(logging.DEBUG)
+
+    logging.basicConfig(
+        filename=app.instance_path + "/lifetracker.log", level=logging.DEBUG
+    )
+    # set database
     app.config.from_mapping(
-        SECRET_KEY="dev",
-        DATABASE=os.path.join(app.instance_path, "lifetracker.sqlite"),
+        SECRET_KEY="dev", DATABASE=os.path.join(app.instance_path, "lifetracker.sqlite")
     )
 
-    if test_config is None:
-        # load the instance config, if it exists, when not testing
-        app.config.from_pyfile("config.py", silent=True)
-    else:
+    if app.config["TESTING"]:
         # load the test config if passed in
         app.config.update(test_config)
-
-    # ensure the instance folder exists
-    try:
-        os.makedirs(app.instance_path)
-    except OSError:
-        pass
+        app.config.from_object("config.test")
+    else:
+        # load the instance config, if it exists, when not testing
+        # app.config.from_pyfile("config.py", silent=True)
+        app.config.from_envvar("LIFETRACKER_CONFIG", silent=True)
+        # app.config.from_object(config, silent=True)
 
     @app.route("/hello")
     def hello():

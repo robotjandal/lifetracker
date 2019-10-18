@@ -22,6 +22,16 @@ Install Life Tracker::
 
     $ pip install -e .
 
+Config
+------
+
+The config/ directory contains the default.py file which is always loaded in.
+The instance/config.py file is used to override the configuration set in
+default.py
+The production.py, development.py and test.py are example configuration files
+which can be copied to instance/config.py.
+> Note: INSTANCE_FOLDER cannot be overridden.
+
 Run
 ---
 
@@ -29,20 +39,15 @@ Run
 
     $ export FLASK_APP=lifetracker
     $ export FLASK_ENV=development
+    $ export LIFETRACKER_CONFIG=<full path to project folder>/instance/config.py
+    # to initialise or clear db:
     $ flask init-db
     $ flask run
+    # or using gunicorn
+    $ gunicorn -b 0.0.0.0:5000 -e LIFETRACKER_CONFIG="<full path to project folder>/instance/config.py" wsgi:app
 
 
 Open http://127.0.0.1:5000 in a browser.
-
-
-Deploy
-------
-
-This project can be deployed to a Docker container with gunicorn:
-    $ docker build -f Dockerfile . -t lifetracker
-    $ docker run -p 5000:5000 lifetracker
-
 
 Test
 ----
