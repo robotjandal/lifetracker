@@ -8,77 +8,97 @@ from flask import (
     url_for,
 )
 
-import datetime
+from flask_table import create_table, Table, Col
+
 from lifetracker.db import get_db
 from lifetracker.goals import fetch_goals
 
 bp = Blueprint("progress", __name__)
 
 
-def get_recent_progress(goal_id, history_num, check_author=True):
-    """
-        Get recent progress on a goal by goal based on returning
-        latest recorded progress per day.
+class ProgressTable(Table):
+    name = Col('Goal')
+    description = Col('Description')
 
-        :param goal_id: id of goal
-        :param history_num: number of past progress dates and values to return
-        :return: the past progress with goal id and author
 
-        Note: currently there is no check against author or goal.
+def get_recent_progress_by_goal(goal_id, dates, offset=0, check_author=True):
     """
-    progress_recent = (
+        Get recent progress for a goal over a set number of dates.
+
+        : param limit: number of dates to return
+        : param offset: page to display (paginiation)
+        : return: a table with columns as dates and goals as rows
+    """
+    sql_query = (
+        "SELECT p.id AS progress_id, progress, goal_id, date(p.created) AS "
+        + " date, g.title"
+        + " FROM progress p JOIN user u ON p.author_id = u.id"
+        + " JOIN goals g ON p.goal_id = g.id"
+        + " WHERE u.id = ? AND p.goal_id = ? AND date IN (%s)"
+        % ",".join("?" * len(dates))
+    )
+    arguments = (g.user["id"], goal_id) + tuple(dates)
+    progress = get_db().execute(sql_query, arguments).fetchall()
+    if progress is None:
+        return None
+    else:
+        return progress
+
+
+def fetch_progress_dates(limit, offset=0, check_author=True):
+    """
+        Get the recent dates during which progress has been written.
+
+        :param limit: number of results to return
+        :param offset: which page of results to display
+        :return: the past progress dates as a list
+
+    """
+    progress_dates = (
         get_db()
         .execute(
-            "SELECT progress.id AS progress_id, \
-            progress, goal_id, date(progress.created) AS date"
-            " FROM progress"
-            " WHERE goal_id = ?"
-            " GROUP BY date"
-            " HAVING MAX(progress.id)"
-            " ORDER BY progress.id DESC"
+            "SELECT DISTINCT DATE(created) as date, author_id"
+            " FROM progress p JOIN user u ON p.author_id = u.id"
+            " WHERE u.id = ?"
+            " ORDER BY date DESC"
             " LIMIT ?",
-            (goal_id, history_num),
+            (g.user["id"], limit),
         )
         .fetchall()
     )
-    return progress_recent
+    return [row["date"] for row in progress_dates]
 
 
-def organise_history():  # including direction of output etc
-    num_past_progress = 5
-    progress_table = []
-    recent_dates = set()
-    inter_table = []  # list of dictionaries TODO: improve name
+def progress_table():
+    """
+    Assemble progress table fetching goals, then progress results by id.
+    The assembled table is then returned.
+    """
+    output = []
+    limit = 5
     goals = fetch_goals()
-    current_app.logger.debug("Retrieving progress")
-    for goal in goals:
-        progress_data = get_recent_progress(goal[0], num_past_progress)
-        goal_dict = {"Description": goal[1]}
-        # Collate progress per date with goal title
-        for row in progress_data:
-            current_app.logger.debug(
-                "goal %s, date %s: value %s", goal[0], row[3], row[1]
-            )
-            row_date = datetime.datetime.strptime(row[3], "%Y-%m-%d").date()
-            recent_dates.add(row_date)
-            goal_dict.update({row_date: row[1]})
-        inter_table.append(goal_dict)
-    sorted_dates = sorted(recent_dates)[-num_past_progress:]
-    header = ["Description"]
-    header.extend(sorted_dates)
-    # format data for display in table
-    current_app.logger.debug("header: %s", header)
-    for goal in inter_table:
-        row = list()
-        row.clear()
-        row.append(goal["Description"])
-        for date in sorted_dates:
-            if date in goal_dict:
-                row.append(goal[date])
-            else:
-                row.append("")
-        progress_table.append(row)
-    return header, progress_table
+    progress_dates = fetch_progress_dates(limit)
+    TableCls = create_table("Progress").add_column("Goal", Col("Goal"))
+    # create table columns
+    for row in progress_dates:
+        TableCls.add_column(row, Col(row))
+
+    for row in goals:
+        goal_progress = get_recent_progress_by_goal(row["id"], progress_dates, 5)
+        if goal_progress is not None:
+            # collate progress into a dictionary
+            output_dictionary = {"Goal": goal_progress[0]["title"]}
+            for row in goal_progress:
+                output_dictionary[row["date"]] = row["progress"]
+            # add remaining keys not found
+            for row in progress_dates:
+                if row not in output_dictionary.keys():
+                    output_dictionary[row] = None
+            # append to output list
+            output.append(output_dictionary)
+    # build table
+    table = TableCls(output, no_items="-")
+    return table
 
 
 @bp.route("/progress", methods=("GET",))
@@ -89,9 +109,9 @@ def index():
     # create a row based table based on the goal description and each date's
     # progress value for each goal
     # this includes a row for the headers: Goal, Date1, Date2 etc
-    header, progress_table = organise_history()
+    table = progress_table()
     return render_template(
-        "progress/index.html", header=header, progress_history=progress_table
+        "progress/index.html", table=table
     )
 
 

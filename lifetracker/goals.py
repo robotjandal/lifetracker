@@ -28,7 +28,7 @@ def get_goal(id, check_author=True):
     goal = (
         get_db()
         .execute(
-            "SELECT g.id, title, created, author_id, username"
+            "SELECT g.id AS goal_id, title, created, author_id, username"
             " FROM goals g JOIN user u ON g.author_id = u.id"
             " WHERE g.id = ?",
             (id,),
@@ -45,15 +45,33 @@ def get_goal(id, check_author=True):
     return goal
 
 
-def fetch_goals(check_author=True):
+def fetch_all_goals(check_author=True):
     """
-        Retrieve all goals for a user
+        Retrieve all goals for all users.
     """
     db = get_db()
     goals = db.execute(
         "SELECT g.id, title, created, author_id, username"
         " FROM goals g JOIN user u ON g.author_id = u.id"
-        " ORDER BY created DESC"
+        # " WHERE u.id = ?"
+        # " ORDER BY created DESC",
+        # (g.user["id"],),
+    ).fetchall()
+
+    return goals
+
+
+def fetch_goals(check_author=True):
+    """
+        Retrieve all goals for a user.
+    """
+    db = get_db()
+    goals = db.execute(
+        "SELECT g.id, title, created, author_id, username"
+        " FROM goals g JOIN user u ON g.author_id = u.id"
+        " WHERE u.id = ?"
+        " ORDER BY created DESC",
+        (g.user["id"],),
     ).fetchall()
 
     return goals
@@ -63,7 +81,7 @@ def fetch_goals(check_author=True):
 def index():
     """ Current goals are displayed."""
     # db = get_db()
-    goals = fetch_goals()
+    goals = fetch_all_goals()
     return render_template("goals/index.html", goals=goals)
 
 
