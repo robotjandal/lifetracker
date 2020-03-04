@@ -10,8 +10,9 @@ black = "==19.3b0"
 flake8 = "==3.7.7"
 gunicorn = "==19.9.0"
 pytest = "==4.5.0"
-pytest-flask = "==0.15.0"
+pytest-flask = "==0.15.1"
 Flask = "==1.0.2"
+flask-table = "*"
 
 [requires]
 python_version = "3.6"

@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "7f9c2186e13dfa6649ac4d2b5cd7ba1dc48b7375dbcc71df904548c94bb154f8"
+            "sha256": "f54af41f27111fd6c3d99448f7aecdbaa38a86acd2923bb2ab5cfed0e0ca665c"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -36,6 +36,13 @@
                 "sha256:f7b7ce16570fe9965acd6d30101a28f62fb4a7f9e926b3bbc9b61f8b04247e72"
             ],
             "version": "==19.3.0"
+        },
+        "babel": {
+            "hashes": [
+                "sha256:1aac2ae2d0d8ea368fa90906567f5c08463d98ade155c0c4bfedd6a0f7160e38",
+                "sha256:d670ea0b10f8b723672d3a6abeb87b565b244da220d76b4dba1b66269ec152d4"
+            ],
+            "version": "==2.8.0"
         },
         "black": {
             "hashes": [
@@ -74,6 +81,20 @@
             ],
             "index": "pypi",
             "version": "==1.0.2"
+        },
+        "flask-babel": {
+            "hashes": [
+                "sha256:247f4ec34cf605d03781f480bccb1a5acb719df1d1a2a743c091ab3db5d5fde2",
+                "sha256:d6a70468f9a8919d59fba2a291a003da3a05ff884275dddbd965f3b98b09ab3e"
+            ],
+            "version": "==1.0.0"
+        },
+        "flask-table": {
+            "hashes": [
+                "sha256:320e5756cd7252e902e03b6cd1087f2c7ebc31364341b482f41f30074d10a770"
+            ],
+            "index": "pypi",
+            "version": "==0.5.0"
         },
         "gunicorn": {
             "hashes": [
@@ -196,11 +217,18 @@
         },
         "pytest-flask": {
             "hashes": [
-                "sha256:283730b469604ecb94caac28df99a40b7c785b828dd8d3323596718b51dfaeb2",
-                "sha256:d874781b622210d8c5d8061cdb091cb059fcb12203125110bd8e6f9256ccbf49"
+                "sha256:9001f6128c5c4a0d243ce46c117f3691052828d2faf39ac151b8388657dce447",
+                "sha256:cbd8c5b9f8f1b83e9c159ac4294964807c4934317a5fba181739ac15e1b823e6"
             ],
             "index": "pypi",
-            "version": "==0.15.0"
+            "version": "==0.15.1"
+        },
+        "pytz": {
+            "hashes": [
+                "sha256:1c557d7d0e871de1f5ccd5833f60fb2550652da6be2693c1e02300743d21500d",
+                "sha256:b02c06db6cf09c12dd25137e563b31700d3b80fcc4ad23abb7a315f2789819be"
+            ],
+            "version": "==2019.3"
         },
         "six": {
             "hashes": [
@@ -232,10 +260,10 @@
         },
         "zipp": {
             "hashes": [
-                "sha256:5c56e330306215cd3553342cfafc73dda2c60792384117893f3a83f8a1209f50",
-                "sha256:d65287feb793213ffe11c0f31b81602be31448f38aeb8ffc2eb286c4f6f6657e"
+                "sha256:aa36550ff0c0b7ef7fa639055d797116ee891440eac1a56f378e2d3179e0320b",
+                "sha256:c599e4d75c98f6798c509911d08a22e6c021d074469042177c8c86fb92eefd96"
             ],
-            "version": "==2.2.0"
+            "version": "==3.1.0"
         }
     },
     "develop": {}

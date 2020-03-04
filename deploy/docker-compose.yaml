@@ -2,6 +2,7 @@ version: '3'
 services:
   lifetracker: 
     image: lifetracker:latest
+    container_name: lifetracker
     # restart: always
     environment:
       - FLASK_ENV=production
