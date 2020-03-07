@@ -24,6 +24,7 @@ CREATE TABLE progress (
   author_id INTEGER NOT NULL,
   created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   goal_id INTEGER NOT NULL,
-  progress INTEGER NOT NULL,
+  hours INTEGER NOT NULL,
+  quality INTEGER NOT NULL,
   FOREIGN KEY (author_id) REFERENCES user (id)
 );

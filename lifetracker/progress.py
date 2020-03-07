@@ -17,8 +17,8 @@ bp = Blueprint("progress", __name__)
 
 
 class ProgressTable(Table):
-    name = Col('Goal')
-    description = Col('Description')
+    name = Col("Goal")
+    description = Col("Description")
 
 
 def get_recent_progress_by_goal(goal_id, dates, offset=0, check_author=True):
@@ -30,7 +30,7 @@ def get_recent_progress_by_goal(goal_id, dates, offset=0, check_author=True):
         : return: a table with columns as dates and goals as rows
     """
     sql_query = (
-        "SELECT p.id AS progress_id, progress, goal_id, date(p.created) AS "
+        "SELECT p.id AS progress_id, hours, goal_id, date(p.created) AS "
         + " date, g.title"
         + " FROM progress p JOIN user u ON p.author_id = u.id"
         + " JOIN goals g ON p.goal_id = g.id"
@@ -89,7 +89,7 @@ def progress_table():
             # collate progress into a dictionary
             output_dictionary = {"Goal": goal_progress[0]["title"]}
             for row in goal_progress:
-                output_dictionary[row["date"]] = row["progress"]
+                output_dictionary[row["date"]] = row["hours"]
             # add remaining keys not found
             for row in progress_dates:
                 if row not in output_dictionary.keys():
@@ -110,9 +110,7 @@ def index():
     # progress value for each goal
     # this includes a row for the headers: Goal, Date1, Date2 etc
     table = progress_table()
-    return render_template(
-        "progress/index.html", table=table
-    )
+    return render_template("progress/index.html", table=table)
 
 
 @bp.route("/progress/create", methods=("GET", "POST"))
@@ -124,13 +122,17 @@ def create():
     if request.method == "POST":
         data_id = request.form.getlist("id")
         data_progress = request.form.getlist("progress")
-        data = {int(k): int(v) for k, v in zip(data_id, data_progress)}
+        data_quality = request.form.getlist("grade")
+        data = {
+            int(k): [int(v), int(s)]
+            for k, v, s in zip(data_id, data_progress, data_quality)
+        }
         db = get_db()
-        for goal, progress in data.items():
+        for goal, data_poihts in data.items():
             db.execute(
-                "INSERT INTO progress (author_id, goal_id, progress) "
-                " VALUES (?, ?, ?)",
-                (g.user["id"], goal, progress),
+                "INSERT INTO progress (author_id, goal_id, hours, quality) "
+                " VALUES (?, ?, ?, ?)",
+                (g.user["id"], goal, data_poihts[0], data_poihts[1]),
             )
         db.commit()
         return redirect(url_for("progress.index"))
