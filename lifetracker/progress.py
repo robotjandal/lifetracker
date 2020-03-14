@@ -10,6 +10,7 @@ from flask import (
 
 from flask_table import create_table, Table, Col
 
+from lifetracker.auth import login_required
 from lifetracker.db import get_db
 from lifetracker.goals import fetch_goals
 
@@ -102,6 +103,7 @@ def progress_table():
 
 
 @bp.route("/progress", methods=("GET",))
+@login_required
 def index():
     """
         Display progress for the last five days.
@@ -114,6 +116,7 @@ def index():
 
 
 @bp.route("/progress/create", methods=("GET", "POST"))
+@login_required
 def create():
     """
         Progress can be added to any/all goal(s) displayed.

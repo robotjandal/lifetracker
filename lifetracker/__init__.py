@@ -57,8 +57,9 @@ def create_app(test_config=None, instance_path=None):
     # db.init_app(app)
 
     # apply the blueprints to the app
-    from lifetracker import auth, goals, progress
+    from lifetracker import auth, goals, home, progress
 
+    app.register_blueprint(home.bp)
     app.register_blueprint(auth.bp)
     app.register_blueprint(goals.bp)
     app.register_blueprint(progress.bp)

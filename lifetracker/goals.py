@@ -45,22 +45,6 @@ def get_goal(id, check_author=True):
     return goal
 
 
-def fetch_all_goals(check_author=True):
-    """
-        Retrieve all goals for all users.
-    """
-    db = get_db()
-    goals = db.execute(
-        "SELECT g.id, title, created, author_id, username"
-        " FROM goals g JOIN user u ON g.author_id = u.id"
-        # " WHERE u.id = ?"
-        # " ORDER BY created DESC",
-        # (g.user["id"],),
-    ).fetchall()
-
-    return goals
-
-
 def fetch_goals(check_author=True):
     """
         Retrieve all goals for a user.
@@ -77,11 +61,11 @@ def fetch_goals(check_author=True):
     return goals
 
 
-@bp.route("/")
-def index():
+@bp.route("/goals")
+def goals():
     """ Current goals are displayed."""
     # db = get_db()
-    goals = fetch_all_goals()
+    goals = fetch_goals()
     return render_template("goals/index.html", goals=goals)
 
 
@@ -107,7 +91,7 @@ def create():
                 (title, g.user["id"]),
             )
             db.commit()
-            return redirect(url_for("goals.index"))
+            return redirect(url_for("goals.goals"))
 
     return render_template("goals/create.html")
 
@@ -130,7 +114,7 @@ def update(id):
             db = get_db()
             db.execute("UPDATE goals SET title = ? WHERE id = ?", (title, id))
             db.commit()
-            return redirect(url_for("goals.index"))
+            return redirect(url_for("goals.goals"))
 
     return render_template("goals/update.html", goal=goal)
 
@@ -147,4 +131,4 @@ def delete(id):
     db.execute("DELETE FROM goals WHERE id = ?", (id,))
     db.commit()
 
-    return redirect(url_for("goals.index"))
+    return redirect(url_for("goals.goals"))

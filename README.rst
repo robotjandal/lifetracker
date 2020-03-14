@@ -49,7 +49,9 @@ Run
 
 Open http://127.0.0.1:5000 in a browser.
 
-Test
+> Note: Currenlty updating a goal does not work.
+
+Test (Currently Not Working)
 ----
 
 ::
