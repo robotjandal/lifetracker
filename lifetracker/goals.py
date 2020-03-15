@@ -28,7 +28,7 @@ def get_goal(id, check_author=True):
     goal = (
         get_db()
         .execute(
-            "SELECT g.id AS goal_id, title, created, author_id, username"
+            "SELECT g.id AS id, title, created, author_id, username"
             " FROM goals g JOIN user u ON g.author_id = u.id"
             " WHERE g.id = ?",
             (id,),

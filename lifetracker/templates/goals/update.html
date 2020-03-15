@@ -7,3 +7,16 @@
 <a class="action" href="{{ url_for('progress.create') }}">Progress</a>
 {% endif %}
 {% endblock %}
+
+{% block content %}
+  <form method="goal">
+    <label for="title">Title</label>
+    <input name="title" id="title"
+      value="{{ request.form['title'] or goal['title'] }}" required>
+    <input type="submit" value="Save">
+  </form>
+  <hr>
+  <form action="{{ url_for('goals.delete', id=goal['id']) }}" method="post">
+    <input class="danger" type="submit" value="Delete" onclick="return confirm('Are you sure?');">
+  </form>
+{% endblock %}
